@@ -272,39 +272,3 @@
         }
     }
 }
-
-@media (max-width: 768px) {
-    .container {
-        padding: 1rem 0;
-    }
-
-    .applicationForm {
-        padding: 1.5rem;
-    }
-
-    .skillsInput {
-        flex-direction: column;
-
-        button {
-            width: 100%;
-        }
-    }
-
-    .formActions {
-        flex-direction: column-reverse;
-        align-items: stretch;
-        gap: 0.5rem;
-
-        .submitButton,
-        .cancelButton {
-            text-align: center;
-            width: 100%;
-        }
-    }
-
-    .header {
-        .positionInfo {
-            padding: 1rem;
-        }
-    }
-}

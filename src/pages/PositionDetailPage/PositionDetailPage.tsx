@@ -6,7 +6,7 @@ import { fetchPositionById, clearCurrentPosition } from '../../store/slices/posi
 import { fetchApplicationsByPosition, updateApplicationStatus, clearError as clearApplicationsError } from '../../store/slices/applicationsSlice';
 import styles from './PositionDetailPage.module.scss';
 
-type TabType = 'all' | 'pending' | 'reviewed' | 'shortlisted' | 'rejected' | 'hired';
+type TabType = 'pending' | 'reviewed' | 'shortlisted' | 'rejected' | 'hired';
 
 const PositionDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -16,7 +16,7 @@ const PositionDetailPage: React.FC = () => {
     const { currentPosition: position, loading: positionLoading, error: positionError } = useAppSelector((state) => state.positions);
     const { applicationsByPosition, loading: applicationsLoading, error: applicationsError } = useAppSelector((state) => state.applications);
 
-    const [activeTab, setActiveTab] = useState<TabType>('all');
+    const [activeTab, setActiveTab] = useState<TabType>('pending');
     const [sortBy, setSortBy] = useState<'applicationDate' | 'candidateName'>('applicationDate');
 
     const loading = positionLoading || applicationsLoading;
@@ -78,7 +78,7 @@ const PositionDetailPage: React.FC = () => {
     };
 
     const filteredAndSortedApplications = applications
-        .filter(app => activeTab === 'all' || app.status === activeTab)
+        .filter(app => app.status === activeTab)
         .sort((a, b) => {
             switch (sortBy) {
                 case 'candidateName':
@@ -90,7 +90,6 @@ const PositionDetailPage: React.FC = () => {
         });
 
     const statusCounts = {
-        all: applications.length,
         pending: applications.filter(app => app.status === 'pending').length,
         reviewed: applications.filter(app => app.status === 'reviewed').length,
         shortlisted: applications.filter(app => app.status === 'shortlisted').length,
@@ -231,13 +230,13 @@ const PositionDetailPage: React.FC = () => {
                 </div>
 
                 <div className={styles.candidatesTabs}>
-                    {(['all', 'pending', 'reviewed', 'shortlisted', 'rejected', 'hired'] as TabType[]).map((tab) => (
+                    {(['pending', 'reviewed', 'shortlisted', 'rejected', 'hired'] as TabType[]).map((tab) => (
                         <button
                             key={tab}
                             className={`${styles.tabButton} ${activeTab === tab ? styles.active : ''}`}
                             onClick={() => setActiveTab(tab)}
                         >
-                            {tab === 'all' ? 'All' : tab.charAt(0).toUpperCase() + tab.slice(1)} ({statusCounts[tab]})
+                            {tab.charAt(0).toUpperCase() + tab.slice(1)} ({statusCounts[tab]})
                         </button>
                     ))}
                 </div>
@@ -257,8 +256,8 @@ const PositionDetailPage: React.FC = () => {
                     {filteredAndSortedApplications.length === 0 && !applicationsLoading ? (
                         <div className={styles.noResults}>
                             <p>No applications found for this filter.</p>
-                            {activeTab !== 'all' && (
-                                <button onClick={() => setActiveTab('all')}>Show All Applications</button>
+                            {activeTab !== 'pending' && (
+                                <button onClick={() => setActiveTab('pending')}>Show Pending Applications</button>
                             )}
                         </div>
                     ) : (
